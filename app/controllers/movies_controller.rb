@@ -11,7 +11,13 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    if params[:sort].present?
+      by_sort_type = params[:sort]
+      sort_movies(by_sort_type)
+    else
+      @movies = Movie.all
+      @sort_type = ''
+    end
   end
 
   def new
@@ -42,4 +48,9 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+  private
+  def sort_movies(sort_type)
+    @movies = Movie.order(sort_type)
+    instance_variable_set("@#{sort_type}", "hilite")
+  end
 end
